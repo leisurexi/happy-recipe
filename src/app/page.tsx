@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ChatContainer, Message } from "@/components/chat/chat-container";
-import { ChatHeader } from "@/components/chat/chat-header";
+import { Sidebar } from "@/components/layout/sidebar";
+import { MainContent } from "@/components/layout/main-content";
+import { Message } from "@/components/layout/main-content";
 import { createUserMessage, createAIMessage, simulateAIResponse } from "@/lib/chat-utils";
 
 export default function Home() {
@@ -33,47 +34,14 @@ export default function Home() {
     }
   };
 
-  const handleClearChat = () => {
-    setMessages([]);
-  };
-
-  const handleExportChat = () => {
-    const chatText = messages
-      .map(msg => `${msg.isUser ? '用户' : 'AI'}: ${msg.content}`)
-      .join('\n\n');
-    
-    const blob = new Blob([chatText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `chat-export-${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   return (
-    <div className="flex h-screen bg-gray-50 p-4">
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="flex h-full flex-col rounded-lg border bg-white shadow-lg">
-          {/* 头部 */}
-          <ChatHeader
-            title="AI 智能助手"
-            onClearChat={handleClearChat}
-            onExportChat={handleExportChat}
-          />
-          
-          {/* 聊天容器 */}
-          <div className="flex-1 overflow-hidden">
-            <ChatContainer
-              messages={messages}
-              onSendMessage={handleSendMessage}
-              isLoading={isLoading}
-            />
-          </div>
-        </div>
-      </div>
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <MainContent
+        messages={messages}
+        onSendMessage={handleSendMessage}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
